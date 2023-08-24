@@ -1,0 +1,29 @@
+---
+- name: Create kuberenetes cluster on AZURE
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars_files:
+    - vars.yaml
+  tasks:
+  - name: Create an AKS cluster
+    azure_rm_aks:
+      name: "{{ cluster_name }}"
+      location: "{{ location }}"
+      resource_group: "{{ resource_group }}"
+      dns_prefix: "{{ dns_prefix }}"
+      linux_profile:
+        admin_username: "{{ admin_username }}"
+        ssh_key: "{{ ssh_key }}"
+      service_principal:
+        client_id: "{{ client_id }}"
+        client_secret: "{{ client_secret }}"
+      agent_pool_profiles:
+      - name: "{{ agent_pool_name }}"
+        count: "{{ agent_pool_count }}"
+        vm_size: "{{ agent_pool_vm_size }}"
+        os_type: "{{ agent_pool_os_type }}"
+      tags:
+        Environment: "{{ environment }}"
+        Owner: "{{ owner }}"
+        CreatedBy: "{{ created_by }}"
