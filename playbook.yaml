@@ -6,12 +6,18 @@
   vars_files:
     - vars.yaml
   tasks:
+  - name: Create a resource group
+    azure_rm_resourcegroup:
+      name: "{{ resource_group }}"
+      location: "{{ location }}"
+
   - name: Create an AKS cluster
     azure_rm_aks:
       name: "{{ cluster_name }}"
       location: "{{ location }}"
       resource_group: "{{ resource_group }}"
       dns_prefix: "{{ dns_prefix }}"
+      kubernetes_version: "{{ kubernetes_version }}"
       linux_profile:
         admin_username: "{{ admin_username }}"
         ssh_key: "{{ ssh_key }}"
@@ -23,7 +29,19 @@
         count: "{{ agent_pool_count }}"
         vm_size: "{{ agent_pool_vm_size }}"
         os_type: "{{ agent_pool_os_type }}"
+        mode: System
       tags:
-        Environment: "{{ environment }}"
+        Environment: "Production"
         Owner: "{{ owner }}"
         CreatedBy: "{{ created_by }}"
+    
+  - name: Get AKS cluster credentials
+    azure_rm_aks_info:
+      resource_group: "{{ resource_group }}"
+      name: "{{ cluster_name }}"
+    register: aks_info
+  
+  - name: print AKS cluster credentials
+    debug:
+      msg: "{{ aks_info }}"
+
