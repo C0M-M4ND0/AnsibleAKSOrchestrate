@@ -34,14 +34,36 @@
         Environment: "Production"
         Owner: "{{ owner }}"
         CreatedBy: "{{ created_by }}"
-    
-  - name: Get AKS cluster credentials
-    azure_rm_aks_info:
-      resource_group: "{{ resource_group }}"
-      name: "{{ cluster_name }}"
-    register: aks_info
-  
-  - name: print AKS cluster credentials
-    debug:
-      msg: "{{ aks_info }}"
+    register: aks
 
+  - name: Copy kube config file locally
+    copy:
+      content: "{{ aks.kube_config }}"
+      dest: "{{ lookup('env', 'HOME') }}/.kube/config"
+      mode: 0600
+
+  - name: wait for cluster to be ready
+    local_action: shell kubectl get nodes
+    register: output
+    until: output.stdout.find('Ready') != -1
+    retries: 10
+    delay: 10
+  
+  - name: ensure kubernetes is installed
+    pip:
+      name: kubernetes
+      state: present
+  
+  - name: ensure namespace is created
+    k8s:
+      name: hello-world
+      api_version: v1
+      kind: Namespace
+      state: present
+      kubeconfig: "{{ lookup('env', 'HOME') }}/.kube/config"
+
+  - name: deploy hello-world app
+    k8s:
+      state: present
+      definition: "{{ lookup('file', '../kubernetes/app-deployment.yaml') }}"
+      kubeconfig: "{{ lookup('env', 'HOME') }}/.kube/config"
