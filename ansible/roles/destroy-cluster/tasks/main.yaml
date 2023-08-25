@@ -1,0 +1,12 @@
+---
+- name: Delete kube config file locally
+  file:
+    path: "{{ lookup('env', 'HOME') }}/.kube/config"
+    state: absent
+
+- name: Destroy cluster
+  azure_rm_aks:
+    name: "{{ cluster_name }}"
+    resource_group: "{{ resource_group }}"
+    state: absent
+

@@ -1,0 +1,10 @@
+---
+- name: Create kuberenetes cluster on AZURE and deploy hello-world app
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars_files:
+    - vars.yaml
+  roles:
+    - create-cluster
+    - deploy-app

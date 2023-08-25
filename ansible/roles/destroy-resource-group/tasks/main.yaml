@@ -1,0 +1,5 @@
+---
+- name: Destroy resource group
+  azure_rm_resourcegroup:
+    name: "{{ resource_group }}"
+    state: absent

@@ -1,0 +1,23 @@
+---
+- name: ensure namespace is created
+  k8s:
+    name: hello-world
+    api_version: v1
+    kind: Namespace
+    state: present
+    kubeconfig: "{{ lookup('env', 'HOME') }}/.kube/config"
+
+- name: deploy hello-world app
+  k8s:
+    state: present
+    definition: "{{ lookup('file', '../kubernetes/app-deployment.yaml') }}"
+    kubeconfig: "{{ lookup('env', 'HOME') }}/.kube/config"
+
+- name: ensure hello-world app is deployed
+  local_action: shell kubectl get pods -n hello-world
+  register: output
+  until: output.stdout.find('Running') != -1
+  retries: 10
+  delay: 10
+- debug:
+    msg: "{{ output.stdout }}"

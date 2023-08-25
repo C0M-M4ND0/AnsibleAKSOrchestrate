@@ -1,12 +1,5 @@
 ---
-- name: Create kuberenetes cluster on AZURE
-  hosts: localhost
-  connection: local
-  gather_facts: false
-  vars_files:
-    - vars.yaml
-  tasks:
-  - name: Create a resource group
+- name: Create a resource group
     azure_rm_resourcegroup:
       name: "{{ resource_group }}"
       location: "{{ location }}"
@@ -48,22 +41,3 @@
     until: output.stdout.find('Ready') != -1
     retries: 10
     delay: 10
-  
-  - name: ensure kubernetes is installed
-    pip:
-      name: kubernetes
-      state: present
-  
-  - name: ensure namespace is created
-    k8s:
-      name: hello-world
-      api_version: v1
-      kind: Namespace
-      state: present
-      kubeconfig: "{{ lookup('env', 'HOME') }}/.kube/config"
-
-  - name: deploy hello-world app
-    k8s:
-      state: present
-      definition: "{{ lookup('file', '../kubernetes/app-deployment.yaml') }}"
-      kubeconfig: "{{ lookup('env', 'HOME') }}/.kube/config"
