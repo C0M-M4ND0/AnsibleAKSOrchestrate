@@ -8,7 +8,7 @@ ssh_key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
 client_id: "{{ lookup('env', 'CLIENT_ID') }}"
 client_secret: "{{ lookup('env', 'CLIENT_SECRET') }}"
 agent_pool_name: "agentpool"
-agent_pool_count: 2
+agent_pool_count: 1
 agent_pool_vm_size: "Standard_DS2_v2"
 agent_pool_os_type: "Linux"
 owner: "Abdelhadi Omar"

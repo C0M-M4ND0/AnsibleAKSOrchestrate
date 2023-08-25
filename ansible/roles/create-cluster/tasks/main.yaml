@@ -1,43 +1,36 @@
 ---
 - name: Create a resource group
-    azure_rm_resourcegroup:
-      name: "{{ resource_group }}"
-      location: "{{ location }}"
+  azure_rm_resourcegroup:
+    name: "{{ resource_group }}"
+    location: "{{ location }}"
 
-  - name: Create an AKS cluster
-    azure_rm_aks:
-      name: "{{ cluster_name }}"
-      location: "{{ location }}"
-      resource_group: "{{ resource_group }}"
-      dns_prefix: "{{ dns_prefix }}"
-      kubernetes_version: "{{ kubernetes_version }}"
-      linux_profile:
-        admin_username: "{{ admin_username }}"
-        ssh_key: "{{ ssh_key }}"
-      service_principal:
-        client_id: "{{ client_id }}"
-        client_secret: "{{ client_secret }}"
-      agent_pool_profiles:
-      - name: "{{ agent_pool_name }}"
-        count: "{{ agent_pool_count }}"
-        vm_size: "{{ agent_pool_vm_size }}"
-        os_type: "{{ agent_pool_os_type }}"
-        mode: System
-      tags:
-        Environment: "Production"
-        Owner: "{{ owner }}"
-        CreatedBy: "{{ created_by }}"
-    register: aks
+- name: Create an AKS cluster
+  azure_rm_aks:
+    name: "{{ cluster_name }}"
+    location: "{{ location }}"
+    resource_group: "{{ resource_group }}"
+    dns_prefix: "{{ dns_prefix }}"
+    kubernetes_version: "{{ kubernetes_version }}"
+    linux_profile:
+      admin_username: "{{ admin_username }}"
+      ssh_key: "{{ ssh_key }}"
+    service_principal:
+      client_id: "{{ client_id }}"
+      client_secret: "{{ client_secret }}"
+    agent_pool_profiles:
+    - name: "{{ agent_pool_name }}"
+      count: "{{ agent_pool_count }}"
+      vm_size: "{{ agent_pool_vm_size }}"
+      os_type: "{{ agent_pool_os_type }}"
+      mode: System
+    tags:
+      Environment: "Production"
+      Owner: "{{ owner }}"
+      CreatedBy: "{{ created_by }}"
+  register: aks
 
-  - name: Copy kube config file locally
-    copy:
-      content: "{{ aks.kube_config }}"
-      dest: "{{ lookup('env', 'HOME') }}/.kube/config"
-      mode: 0600
-
-  - name: wait for cluster to be ready
-    local_action: shell kubectl get nodes
-    register: output
-    until: output.stdout.find('Ready') != -1
-    retries: 10
-    delay: 10
+- name: Copy kube config file locally
+  copy:
+    content: "{{ aks.kube_config }}"
+    dest: "{{ lookup('env', 'HOME') }}/.kube/config"
+    mode: 0600
