@@ -7,7 +7,6 @@ AnsibleAKSOrchestrate is a project that demonstrates how to use Ansible to orche
 - [Usage](#usage)
 - [Directory Structure](#directory-structure)
 - [Contributing](#contributing)
-- [License](#license)
 ## Project Overview
 
 AnsibleAKSOrchestrate showcases how Ansible can be utilized to streamline the process of creating an AKS cluster and deploying an application to it. The project is organized into separate roles for cluster creation and app deployment, ensuring clear separation of concerns. The roles are designed for modularity, making it easy to customize and extend the project.
@@ -20,3 +19,51 @@ To get started with AnsibleAKSOrchestrate, follow these steps:
    ```sh
    git clone https://github.com/C0M-M4ND0/AnsibleAKSOrchestrate.git
    cd AnsibleAKSOrchestrate
+2. Install Ansible:
+   ```sh
+   pip install ansible
+3. Customize the vars.yaml file to match your environment and requirements.
+4. Login to Azure Cloud:
+   
+   Before setting up the AKS cluster, make sure you're logged into your Azure account using the Azure CLI:
+   ```sh
+   az login
+   ```
+6. Install kubectl:
+
+   To interact with the AKS cluster, you'll need kubectl installed. You can install it using the Azure CLI:
+   ```sh
+   az aks install-cli
+# Usage
+- Setup AKS Cluster and Deploy App:
+  Run the following command to set up the AKS cluster and deploy the app:
+  ```sh
+  ansible-playbook ansible/setup-k8s-environment.yaml
+- Tear Down AKS Environment:
+  To tear down the AKS environment and associated resources:
+  ```sh
+  ansible-playbook ansible/destroy-k8s-environment.yaml
+# Directory Structure
+The project directory structure is organized as follows:
+```sh
+.
+├── ansible/
+│   ├── destroy-k8s-environment.yaml
+│   ├── roles/
+│   │   ├── create-cluster/
+│   │   │   └── tasks/
+│   │   │       └── main.yaml
+│   │   ├── deploy-app/
+│   │   │   └── tasks/
+│   │   │       └── main.yaml
+│   │   ├── ...
+│   │   └── ...
+│   ├── setup-k8s-environment.yaml
+│   └── vars.yaml
+└── kubernetes/
+    └── app-deployment.yaml
+```
+# Contributing
+Contributions are welcome! If you find any issues or have suggestions for improvements, feel free to open an issue or create a pull request.
+
+
