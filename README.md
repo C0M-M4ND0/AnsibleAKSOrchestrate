@@ -21,7 +21,7 @@ To get started with AnsibleAKSOrchestrate, follow these steps:
    cd AnsibleAKSOrchestrate
 2. Install Ansible:
    ```sh
-   pip install ansible
+   pip3 install ansible
 3. Customize the vars.yaml file to match your environment and requirements.
 4. Login to Azure Cloud:
    
@@ -34,6 +34,13 @@ To get started with AnsibleAKSOrchestrate, follow these steps:
    To interact with the AKS cluster, you'll need kubectl installed. You can install it using the Azure CLI:
    ```sh
    az aks install-cli
+7. Install Azure collection:
+   ```sh
+   ansible-galaxy collection install azure.azcollection
+8. Install dependencies required by the collection:
+   ```sh
+   pip3 install -r ~/.ansible/collections/ansible_collections/azure/azcollection/requirements-azure.txt
+
 # Usage
 - Setup AKS Cluster and Deploy App:
   Run the following command to set up the AKS cluster and deploy the app:
