@@ -1,0 +1,23 @@
+---
+- name: Check if prometheus-community repository exists
+  shell: helm repo list | grep prometheus-community
+  register: prometheus_repo_check
+  failed_when: false
+  changed_when: false
+
+- name: Add prometheus-community repository
+  command: helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+  when: prometheus_repo_check.rc != 0
+
+- name: Update helm repositories
+  shell: helm repo update
+
+- name: Check if the promethus already installed
+  shell: helm list -n monitoring | grep prometheus
+  register: prometheus_check
+  failed_when: false
+  changed_when: false
+
+- name: Install prometheus stack
+  command: helm install prometheus prometheus-community/kube-prometheus-stack --namespace monitoring --create-namespace
+  when: prometheus_check.rc != 0

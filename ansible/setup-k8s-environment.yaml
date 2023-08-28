@@ -8,3 +8,4 @@
   roles:
     - create-cluster
     - deploy-app
+    - monitor-cluster
