@@ -46,7 +46,7 @@ To get started with AnsibleAKSOrchestrate, follow these steps:
    pip3 install -r ~/.ansible/collections/ansible_collections/azure/azcollection/requirements-azure.txt
 9. Install Helm:
     
-    Helm is required to deploy Prometheus. Depending on your operating system, follow the installation instructions for Helm: Helm Installation Guide.
+    Helm is required to deploy Prometheus. Depending on your operating system, follow the installation instructions for Helm: [Helm Installation Guide](https://helm.sh/docs/intro/install/).
 
 # Usage
 - Setup AKS Cluster and Deploy App:
