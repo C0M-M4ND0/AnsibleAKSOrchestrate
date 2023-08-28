@@ -1,5 +1,5 @@
 # AnsibleAKSOrchestrate
-AnsibleAKSOrchestrate is a project that demonstrates how to use Ansible to orchestrate the creation of an Azure Kubernetes Service (AKS) cluster and deploy an application to it. This project provides a clear structure for setting up the cluster and deploying the app, enhancing modularity and maintainability.
+AnsibleAKSOrchestrate is a project that demonstrates how to use Ansible to orchestrate the creation of an Azure Kubernetes Service (AKS) cluster, deploy an application to it, and set up a monitoring using Prometheus. This project provides a clear structure for setting up the cluster, deploying the app, and enabling monitoring capabilities.
 ## Table of Contents
 
 - [Project Overview](#project-overview)
@@ -9,8 +9,7 @@ AnsibleAKSOrchestrate is a project that demonstrates how to use Ansible to orche
 - [Contributing](#contributing)
 ## Project Overview
 
-AnsibleAKSOrchestrate showcases how Ansible can be utilized to streamline the process of creating an AKS cluster and deploying an application to it. The project is organized into separate roles for cluster creation and app deployment, ensuring clear separation of concerns. The roles are designed for modularity, making it easy to customize and extend the project.
-
+AnsibleAKSOrchestrate showcases how Ansible can be utilized to streamline the process of creating an AKS cluster, deploying an application, and implementing monitoring with Prometheus. The project is organized into separate roles for cluster creation, app deployment, and monitoring setup, ensuring clear separation of concerns and enhancing modularity.
 ## Getting Started
 
 To get started with AnsibleAKSOrchestrate, follow these steps:
@@ -22,8 +21,13 @@ To get started with AnsibleAKSOrchestrate, follow these steps:
 2. Install Ansible:
    ```sh
    pip3 install ansible
-3. Customize the vars.yaml file to match your environment and requirements.
-4. Login to Azure Cloud:
+3. Install Azure Modules for Ansible:
+   To interact with Azure services using Ansible, you'll need to install the Azure modules. You can install them using the following command:
+   ```sh
+   pip3 install "ansible[azure]"
+
+4. Customize the vars.yaml file to match your environment and requirements.
+5. Login to Azure Cloud:
    
    Before setting up the AKS cluster, make sure you're logged into your Azure account using the Azure CLI:
    ```sh
@@ -40,6 +44,9 @@ To get started with AnsibleAKSOrchestrate, follow these steps:
 8. Install dependencies required by the collection:
    ```sh
    pip3 install -r ~/.ansible/collections/ansible_collections/azure/azcollection/requirements-azure.txt
+9. Install Helm:
+    
+    Helm is required to deploy Prometheus. Depending on your operating system, follow the installation instructions for Helm: Helm Installation Guide.
 
 # Usage
 - Setup AKS Cluster and Deploy App:
@@ -50,24 +57,50 @@ To get started with AnsibleAKSOrchestrate, follow these steps:
   To tear down the AKS environment and associated resources:
   ```sh
   ansible-playbook ansible/destroy-k8s-environment.yaml
+- Access Grafana:
+  
+  After deploying the monitoring stack, you can access Grafana to visualize your metrics.
+  
+  Follow these steps:
+  
+  a. Start port forwarding to the Grafana service:
+  ```sh
+  kubectl port-forward -n monitoring service/prometheus-grafana 3000:80
+  ```
+  b. Open your web browser and navigate to http://localhost:3000.
+  
+  Use the following credentials to log in:
+  
+     - Username: `admin`
+  
+     - Password: `prom-operator`
+  
+  d. Once logged in, you can explore the monitoring dashboards and visualize your AKS cluster metrics.
 # Directory Structure
 The project directory structure is organized as follows:
 ```sh
 .
-├── ansible/
+├── ansible
 │   ├── destroy-k8s-environment.yaml
-│   ├── roles/
-│   │   ├── create-cluster/
-│   │   │   └── tasks/
+│   ├── roles
+│   │   ├── create-cluster
+│   │   │   └── tasks
 │   │   │       └── main.yaml
-│   │   ├── deploy-app/
-│   │   │   └── tasks/
+│   │   ├── deploy-app
+│   │   │   └── tasks
 │   │   │       └── main.yaml
-│   │   ├── ...
-│   │   └── ...
+│   │   ├── destroy-cluster
+│   │   │   └── tasks
+│   │   │       └── main.yaml
+│   │   ├── destroy-resource-group
+│   │   │   └── tasks
+│   │   │       └── main.yaml
+│   │   └── monitor-cluster
+│   │       └── tasks
+│   │           └── main.yaml
 │   ├── setup-k8s-environment.yaml
 │   └── vars.yaml
-└── kubernetes/
+└── kubernetes
     └── app-deployment.yaml
 ```
 # Contributing
