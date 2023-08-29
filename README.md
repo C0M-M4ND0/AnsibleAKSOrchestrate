@@ -26,7 +26,7 @@ To get started with AnsibleAKSOrchestrate, follow these steps:
    ```sh
    pip3 install "ansible[azure]"
 
-4. Customize the vars.yaml file to match your environment and requirements.
+4. Customize the vars.yaml file to match your environment and requirements, you need to add `CLIENT_ID` and `CLIENT_SECRET` to your environment variable.
 5. Login to Azure Cloud:
    
    Before setting up the AKS cluster, make sure you're logged into your Azure account using the Azure CLI:
